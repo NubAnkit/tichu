@@ -1,0 +1,527 @@
+/* Pixelify Sans draws 2 and 5 like an S. This tiny font (scripts/build-digit-font.ts)
+   supplies clearer 2/5 glyphs on Pixelify's own grid; unicode-range limits it to those. */
+@font-face {
+  font-family: 'Tichu Digits';
+  src: url('../fonts/tichu-digits-400.otf') format('opentype');
+  font-weight: 100 549;
+  unicode-range: U+0032, U+0035;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Tichu Digits';
+  src: url('../fonts/tichu-digits-700.otf') format('opentype');
+  font-weight: 550 900;
+  unicode-range: U+0032, U+0035;
+  font-display: block;
+}
+
+/* =====================================================================
+   ARCADE — retro pixel / CRT: posterised paint-swirl backdrop, chunky
+   rounded panels with hard drop shadows, juicy wobbling cards.
+   Font: Pixelify Sans.
+   ===================================================================== */
+.theme-arcade {
+  --bg: #12161f;
+  --text: #f4f1ea;
+  --panel: #27364a;
+  --panel-dark: #1a2433;
+  --edge: #0c121b;
+  --orange: #ff9a1f;
+  --red: #ec4a45;
+  --blue: #2f8de4;
+  --green: #3fbf6a;
+  --gold: #ffcf3f;
+  --font-display: 'Tichu Digits', 'Pixelify Sans', 'Courier New', monospace;
+  --font-body: 'Tichu Digits', 'Pixelify Sans', 'Courier New', monospace;
+  --font-card: 'Tichu Digits', 'Pixelify Sans', 'Courier New', monospace;
+  --jade: #24a35a;
+  --sword: #2b3a4c;
+  --pagoda: #2f7fdc;
+  --star: #e3403a;
+  --mahjong: #17a08a;
+  --dog: #8c6a44;
+  --phoenix: #ff7a1a;
+  --dragon: #d42a3a;
+  --card-face: #f6f2e7;
+  --phoenix-core: #ffe066;
+  --dragon-iris: #ffd23f;
+  font-size: 16px;
+}
+
+.theme-arcade .bg-arcade {
+  background: #1b2030;
+}
+.theme-arcade .bg-crt {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, rgba(255, 255, 255, 0.04), transparent 70%);
+  mix-blend-mode: multiply;
+  animation: crtFlicker 5s steps(2) infinite;
+}
+@keyframes crtFlicker {
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* ---- chunky panels */
+.theme-arcade .seat,
+.theme-arcade .side,
+.theme-arcade .modal,
+.theme-arcade .menu-section,
+.theme-arcade .advice,
+.theme-arcade .error {
+  background: var(--panel);
+  border: 3px solid #3d5068;
+  border-radius: 14px;
+  box-shadow: 0 6px 0 var(--edge), 0 14px 26px rgba(0, 0, 0, 0.45);
+}
+.theme-arcade .seat.active {
+  border-color: var(--gold);
+  animation: arcBob 1s ease-in-out infinite;
+}
+@keyframes arcBob {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.theme-arcade .seat.ally .seat-name {
+  color: #7fe3a0;
+}
+.theme-arcade .seat.foe .seat-name {
+  color: #ff8f86;
+}
+.theme-arcade .seat-name,
+.theme-arcade .brand {
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+.theme-arcade .brand {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: 0.1em;
+  text-shadow: 3px 3px 0 #b13a2c;
+}
+.theme-arcade .topbar {
+  background: rgba(12, 18, 27, 0.65);
+  border-bottom: 3px solid var(--edge);
+}
+.theme-arcade .pill {
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--edge);
+}
+.theme-arcade .pill.us {
+  background: var(--blue);
+}
+.theme-arcade .pill.them {
+  background: var(--red);
+}
+.theme-arcade .pill.target {
+  background: #4a5a70;
+}
+
+.theme-arcade .call-badge {
+  background: var(--orange);
+  color: #2a1400;
+  box-shadow: 0 2px 0 var(--edge);
+  animation: arcWiggle 0.6s ease-in-out infinite;
+}
+.theme-arcade .call-badge.grand {
+  background: var(--gold);
+}
+@keyframes arcWiggle {
+  25% {
+    transform: rotate(-4deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+}
+.theme-arcade .out-badge {
+  background: var(--green);
+  color: #062b14;
+}
+.theme-arcade .pass-bubble,
+.theme-arcade .trick-label,
+.theme-arcade .wish-chip,
+.theme-arcade .card-tag,
+.theme-arcade .seat-fan .count {
+  background: var(--panel-dark);
+  border: 2px solid #3d5068;
+  box-shadow: 0 3px 0 var(--edge);
+}
+.theme-arcade .pass-bubble {
+  background: #4a5a70;
+}
+.theme-arcade .wish-chip {
+  background: var(--orange);
+  color: #2a1400;
+  border-color: #ffd08a;
+}
+.theme-arcade .card-tag {
+  background: var(--blue);
+}
+.theme-arcade .trick-empty {
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ---- cards */
+.theme-arcade .card-face {
+  border-radius: 8px;
+  background: var(--card-face);
+  border: 2px solid #d9d0ba;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.35), 0 8px 14px rgba(0, 0, 0, 0.35);
+}
+.theme-arcade .size-sm .card-face,
+.theme-arcade .size-sm .card-back-art {
+  border-radius: 5px;
+}
+.theme-arcade .card.special .card-face {
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--ink) 18%, transparent), transparent 60%),
+    var(--card-face);
+  border-color: color-mix(in srgb, var(--ink) 55%, #d9d0ba);
+}
+.theme-arcade .card-title {
+  color: var(--ink);
+}
+.theme-arcade .card-rank {
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
+}
+.theme-arcade .glyph {
+  filter: drop-shadow(1px 2px 0 rgba(0, 0, 0, 0.18));
+}
+/* foil sheen that follows the mouse */
+.theme-arcade .card-sheen {
+  opacity: 0;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.55), rgba(140, 220, 255, 0.18) 30%, transparent 60%);
+  transition: opacity 0.15s;
+}
+.theme-arcade .card.clickable:hover .card-sheen {
+  opacity: 1;
+}
+.theme-arcade .kind-dragon .card-sheen,
+.theme-arcade .kind-phoenix .card-sheen {
+  opacity: 0.55;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 90, 160, 0.25), rgba(90, 200, 255, 0.25), rgba(255, 240, 90, 0.25), transparent 80%);
+  background-size: 200% 200%;
+  animation: holo 3s linear infinite;
+}
+@keyframes holo {
+  to {
+    background-position: 200% 0;
+  }
+}
+/* idle wobble in hand */
+.theme-arcade .hand .card-face {
+  animation: arcIdle 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.41s);
+}
+@keyframes arcIdle {
+  0%,
+  100% {
+    rotate: -1.4deg;
+  }
+  50% {
+    rotate: 1.4deg;
+  }
+}
+.theme-arcade .hand .card:hover .card-face {
+  scale: 1.08;
+}
+.theme-arcade .card.selected .card-face {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px var(--orange), 0 9px 0 rgba(0, 0, 0, 0.3), 0 14px 22px rgba(0, 0, 0, 0.45);
+}
+.theme-arcade .card.hinted .card-face {
+  animation: arcHint 0.7s ease-in-out infinite;
+}
+@keyframes arcHint {
+  50% {
+    box-shadow: 0 0 0 4px var(--blue), 0 0 22px var(--blue);
+  }
+}
+.theme-arcade .trick-play.depth-0 .card-face {
+  animation: arcLand 0.4s ease-out;
+}
+@keyframes arcLand {
+  0% {
+    scale: 1.25;
+  }
+  60% {
+    scale: 0.95;
+  }
+}
+
+/* card back: red with white diamond lattice */
+.theme-arcade .card-back-art {
+  border-radius: 8px;
+  background:
+    repeating-linear-gradient(45deg, transparent 0 5px, rgba(255, 255, 255, 0.22) 5px 7px),
+    repeating-linear-gradient(-45deg, transparent 0 5px, rgba(255, 255, 255, 0.22) 5px 7px),
+    #d8323f;
+  border: 2px solid #fff;
+  box-shadow: inset 0 0 0 2px #9d1c27, 0 3px 0 rgba(0, 0, 0, 0.4);
+  display: grid;
+  place-items: center;
+}
+.theme-arcade .card-back-emblem {
+  width: 34%;
+  aspect-ratio: 1;
+  background: #fff;
+  rotate: 45deg;
+  box-shadow: inset 0 0 0 3px #d8323f, inset 0 0 0 5px #fff, inset 0 0 0 8px #d8323f;
+}
+
+/* ---- buttons: chunky with hard bottom shadow */
+.theme-arcade .btn {
+  color: #fff;
+  font-weight: 700;
+  border-radius: 10px;
+  background: #4a5a70;
+  box-shadow: 0 5px 0 var(--edge);
+  text-shadow: 1px 2px 0 rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.04em;
+}
+.theme-arcade .btn:not(:disabled):hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+.theme-arcade .btn:not(:disabled):active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+.theme-arcade .btn.primary {
+  background: var(--orange);
+}
+.theme-arcade .btn.primary.bomb {
+  background: var(--red);
+  animation: arcWiggle 0.4s infinite;
+}
+.theme-arcade .btn.danger {
+  background: var(--red);
+}
+.theme-arcade .btn.call {
+  background: var(--blue);
+}
+.theme-arcade .btn.ghost {
+  background: #3b4a5e;
+}
+
+/* ---- side panel */
+.theme-arcade .tabs {
+  gap: 6px;
+  padding: 8px 8px 0;
+}
+.theme-arcade .tab {
+  border-radius: 8px;
+  background: var(--panel-dark);
+  box-shadow: 0 3px 0 var(--edge);
+}
+.theme-arcade .tab.active {
+  background: var(--red);
+}
+.theme-arcade .log-line.k-thought {
+  color: #9fd4ff;
+  border-color: var(--blue);
+  background: rgba(47, 141, 228, 0.1);
+  border-radius: 0 6px 6px 0;
+  font-style: normal;
+}
+.theme-arcade .log-line.k-call {
+  color: var(--orange);
+}
+.theme-arcade .log-line.k-out {
+  color: #7fe3a0;
+}
+.theme-arcade .log-line.k-deal {
+  color: var(--gold);
+}
+.theme-arcade .pip.out {
+  background: var(--gold);
+  box-shadow: 0 2px 0 var(--edge);
+}
+.theme-arcade .pip.mine {
+  background: var(--blue);
+}
+.theme-arcade .pip.gone {
+  background: var(--panel-dark);
+}
+.theme-arcade .advice-tag {
+  background: var(--blue);
+}
+.theme-arcade .error {
+  border-color: var(--red);
+}
+.theme-arcade .status.bad {
+  color: #ff8f86;
+}
+.theme-arcade .must {
+  color: var(--orange);
+}
+.theme-arcade .slot-empty {
+  border: 3px dashed #5b6e87;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+}
+.theme-arcade .pass-slot.partner .slot-label {
+  color: #7fe3a0;
+}
+.theme-arcade td.pos {
+  color: #7fe3a0;
+}
+.theme-arcade td.neg {
+  color: #ff8f86;
+}
+.theme-arcade .call-result.made {
+  background: var(--green);
+  color: #062b14;
+}
+.theme-arcade .call-result.failed {
+  background: var(--red);
+}
+.theme-arcade .field select {
+  background: var(--panel-dark);
+  color: var(--text);
+  border: 2px solid #3d5068;
+  border-radius: 8px;
+}
+
+/* ---- banner: big pixel text that slams in and shakes */
+.theme-arcade .banner {
+  animation: bannerIn 1.7s ease-out forwards, arcShake 0.35s 0.15s;
+}
+.theme-arcade .banner-title {
+  font-weight: 700;
+  font-size: 84px;
+  color: #fff;
+  text-shadow: 4px 4px 0 var(--red), 8px 8px 0 #000;
+  letter-spacing: 0.04em;
+}
+.theme-arcade .banner.tone-call .banner-title {
+  text-shadow: 4px 4px 0 var(--blue), 8px 8px 0 #000;
+}
+.theme-arcade .banner.tone-out .banner-title {
+  color: var(--gold);
+  text-shadow: 4px 4px 0 #b13a2c, 8px 8px 0 #000;
+}
+.theme-arcade .banner.tone-dragon .banner-title {
+  color: #ffd23f;
+}
+.theme-arcade .banner-sub {
+  background: var(--panel-dark);
+  padding: 4px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 0 #000;
+}
+@keyframes arcShake {
+  20% {
+    translate: -6px 3px;
+  }
+  40% {
+    translate: 5px -4px;
+  }
+  60% {
+    translate: -4px 2px;
+  }
+  80% {
+    translate: 3px -1px;
+  }
+}
+
+/* ---- menu */
+.theme-arcade .menu-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 110px;
+  text-shadow: 6px 6px 0 var(--red), 12px 12px 0 #000;
+  animation: arcFloat 3s ease-in-out infinite;
+}
+@keyframes arcFloat {
+  50% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+}
+.theme-arcade .menu-section h3 {
+  color: var(--gold);
+}
+.theme-arcade .theme-option {
+  background: var(--panel-dark);
+  border: 3px solid #3d5068;
+  border-radius: 12px;
+  color: var(--text);
+  box-shadow: 0 4px 0 var(--edge);
+}
+.theme-arcade .theme-option.active {
+  border-color: var(--orange);
+}
+.theme-arcade .opt-underworld .theme-name {
+  font-family: 'Cinzel', serif;
+}
+.theme-arcade .hero-card .card-face {
+  animation: arcIdle 2.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.6s);
+}
+
+/* ---- lobby */
+.theme-arcade .lobby-code {
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #000;
+}
+.theme-arcade .lobby-seat,
+.theme-arcade .lobby-felt {
+  background: var(--panel-dark);
+  border: 3px solid #3d5068;
+  border-radius: 12px;
+  box-shadow: 0 4px 0 var(--edge);
+}
+.theme-arcade .lobby-felt {
+  background: #1f5e45;
+  border-color: #2c7d5c;
+}
+.theme-arcade .lobby-seat.mine {
+  border-color: var(--orange);
+}
+.theme-arcade .lobby-seat-pos {
+  color: var(--gold);
+}
+.theme-arcade .host-chip {
+  background: var(--gold);
+  color: #2a1400;
+}
+.theme-arcade .offline-chip {
+  background: var(--red);
+}
+.theme-arcade .bot-chip {
+  background: var(--blue);
+}
+.theme-arcade .field input,
+.theme-arcade .code-input,
+.theme-arcade .seat-select {
+  background: var(--panel-dark);
+  color: var(--text);
+  border: 2px solid #3d5068;
+  border-radius: 8px;
+}
+.theme-arcade .code-input {
+  font-size: 18px;
+}
+
+/* ---- trick history */
+.theme-arcade .trick-history {
+  background: var(--panel);
+  border: 3px solid #3d5068;
+  border-radius: 12px;
+  box-shadow: 0 6px 0 var(--edge), 0 14px 26px rgba(0, 0, 0, 0.5);
+}
+.theme-arcade .th-list li {
+  background: var(--panel-dark);
+}
+.theme-arcade .th-list li.winning {
+  box-shadow: inset 0 0 0 2px var(--orange);
+}
+.theme-arcade .th-win {
+  color: var(--orange);
+}
