@@ -7,6 +7,9 @@ import { GameScreen, SeatDisplay } from './GameScreen';
 import { GameConfig, useGame } from './useGame';
 import { Lobby } from './Lobby';
 import { activeLobby, useOnline } from './online';
+import { SoundName, playSound } from './sfx';
+
+const HERO_SOUND: Record<number, SoundName> = { [MAHJONG]: 'mahjong', [DOG]: 'dog', [PHOENIX]: 'phoenix', [DRAGON]: 'dragon' };
 
 
 function load<T>(key: string, fallback: T): T {
@@ -122,7 +125,14 @@ export function App() {
 
         <div className="menu-hero">
           {[MAHJONG, DOG, PHOENIX, DRAGON].map((id, i) => (
-            <Card key={id} id={id} size="lg" className="hero-card" style={{ ['--i' as string]: i, ['--n' as string]: 4 }} />
+            <Card
+              key={id}
+              id={id}
+              size="lg"
+              className="hero-card"
+              style={{ ['--i' as string]: i, ['--n' as string]: 4 }}
+              onClick={() => playSound(HERO_SOUND[id])}
+            />
           ))}
         </div>
 

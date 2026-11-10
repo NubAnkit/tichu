@@ -506,3 +506,11 @@
 .theme-arcade .th-win {
   color: var(--orange);
 }
+
+.theme-arcade .sfx-toggle.off {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+.theme-arcade .hero-card {
+  cursor: pointer;
+}

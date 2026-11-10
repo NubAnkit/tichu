@@ -5,6 +5,7 @@ import { GameEvent, canCallTichu, isActive, playOptions, team, topCombo } from '
 import type { Decision } from '../bots';
 import { Card, RankText } from './components/Card';
 import { SwirlBackground } from './components/Backgrounds';
+import { SoundName, playSound, setSoundEnabled, soundEnabled } from './sfx';
 import type { ReactNode } from 'react';
 import type { GameState } from '../engine/game';
 import type { GameController } from './useGame';
@@ -58,7 +59,10 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
   const [trickHover, setTrickHover] = useState(false);
   const [trickPinned, setTrickPinned] = useState(false);
   const [showThoughts, setShowThoughts] = useState(true);
-  const seenEvent = useRef(0);
+  // only react (banners, sounds) to events that happen after this screen opened,
+  // not to the history of a game you join or rejoin mid-way
+  const seenEvent = useRef(state.events.length ? state.events[state.events.length - 1].id : 0);
+  const [sound, setSound] = useState(soundEnabled);
 
   const me = 0;
   const hand = state.hands[me];
@@ -92,6 +96,7 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
     const fresh = state.events.filter((e) => e.id > seenEvent.current);
     if (!fresh.length) return;
     seenEvent.current = fresh[fresh.length - 1].id;
+    for (const s of soundsFor(fresh)) playSound(s);
     const b = pickBanner(fresh);
     if (b) {
       setBanner(b);
@@ -190,6 +195,16 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
           <span className="pill target">to {state.targetScore}</span>
         </div>
         <div className="topbar-actions">
+          <button
+            className={`btn small ghost sfx-toggle ${sound ? '' : 'off'}`}
+            onClick={() => {
+              setSoundEnabled(!sound);
+              setSound(!sound);
+            }}
+            title="Sound effects for special cards and bombs"
+          >
+            SFX {sound ? 'on' : 'off'}
+          </button>
           {topbarExtra}
           <button className="btn small ghost" onClick={onMenu}>
             {menuLabel}
@@ -399,6 +414,21 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
 }
 
 // ---------------------------------------------------------------------------
+
+/** Which sound effects a batch of new events should play (one per kind). */
+function soundsFor(events: GameEvent[]): SoundName[] {
+  const out = new Set<SoundName>();
+  for (const e of events) {
+    if (e.kind !== 'play') continue;
+    const cards = e.combo.cards;
+    if (isBomb(e.combo)) out.add('bomb');
+    if (cards.includes(DRAGON)) out.add('dragon');
+    if (cards.includes(PHOENIX)) out.add('phoenix');
+    if (cards.includes(DOG)) out.add('dog');
+    if (cards.includes(MAHJONG)) out.add('mahjong');
+  }
+  return [...out];
+}
 
 function pickBanner(events: GameEvent[]): Banner | null {
   let b: Banner | null = null;
