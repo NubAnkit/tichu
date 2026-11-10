@@ -1,20 +1,3 @@
-/* Pixelify Sans draws 2 and 5 like an S. This tiny font (scripts/build-digit-font.ts)
-   supplies clearer 2/5 glyphs on Pixelify's own grid; unicode-range limits it to those. */
-@font-face {
-  font-family: 'Tichu Digits';
-  src: url('../fonts/tichu-digits-400.otf') format('opentype');
-  font-weight: 100 549;
-  unicode-range: U+0032, U+0035;
-  font-display: block;
-}
-@font-face {
-  font-family: 'Tichu Digits';
-  src: url('../fonts/tichu-digits-700.otf') format('opentype');
-  font-weight: 550 900;
-  unicode-range: U+0032, U+0035;
-  font-display: block;
-}
-
 /* =====================================================================
    ARCADE — retro pixel / CRT: posterised paint-swirl backdrop, chunky
    rounded panels with hard drop shadows, juicy wobbling cards.
