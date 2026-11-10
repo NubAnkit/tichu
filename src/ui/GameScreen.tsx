@@ -4,12 +4,11 @@ import { COMBO_NAMES, Combo, beats, comboKey, describeCombo, isBomb, parseCombo 
 import { GameEvent, canCallTichu, isActive, playOptions, team, topCombo } from '../engine/game';
 import type { Decision } from '../bots';
 import { Card, RankText } from './components/Card';
-import { EmberBackground, SwirlBackground } from './components/Backgrounds';
+import { SwirlBackground } from './components/Backgrounds';
 import type { ReactNode } from 'react';
 import type { GameState } from '../engine/game';
 import type { GameController } from './useGame';
 import { SEAT_DIR, describeEvent, seatLabel, setSeatNames } from './text';
-import type { Theme } from './App';
 
 export interface SeatDisplay {
   name: string;
@@ -21,8 +20,6 @@ interface Props {
   game: GameController;
   /** Relative seats 0..3 (0 = you). */
   seats: SeatDisplay[];
-  theme: Theme;
-  onTheme: (t: Theme) => void;
   onMenu: () => void;
   menuLabel?: string;
   /** Online games hide bot reasoning (it would leak hidden cards). */
@@ -44,7 +41,7 @@ const PASS_TARGETS = [
   { label: 'East', role: 'opponent', seat: 1 },
 ];
 
-export function GameScreen({ game, seats, theme, onTheme, onMenu, menuLabel = 'Menu', online = false, canRestart = true, topbarExtra }: Props) {
+export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = false, canRestart = true, topbarExtra }: Props) {
   const { state, dispatch, thoughts, error, setError, restart, hint } = game;
   setSeatNames(seats.map((s) => s.name));
   useEffect(() => () => setSeatNames(null), []);
@@ -176,8 +173,8 @@ export function GameScreen({ game, seats, theme, onTheme, onMenu, menuLabel = 'M
   const handToShow = phase === 'passing' && !state.passChoices[me] ? hand.filter((c) => !passSlots.includes(c)) : hand;
 
   return (
-    <div className={`game theme-${theme}`}>
-      {theme === 'underworld' ? <EmberBackground /> : <SwirlBackground />}
+    <div className="game theme-arcade">
+      <SwirlBackground />
 
       <header className="topbar">
         <div className="brand">TICHU</div>
@@ -188,9 +185,6 @@ export function GameScreen({ game, seats, theme, onTheme, onMenu, menuLabel = 'M
           <span className="pill target">to {state.targetScore}</span>
         </div>
         <div className="topbar-actions">
-          <button className="btn small ghost" onClick={() => onTheme(theme === 'underworld' ? 'arcade' : 'underworld')}>
-            Theme: {theme === 'underworld' ? 'Underworld' : 'Arcade'}
-          </button>
           {topbarExtra}
           <button className="btn small ghost" onClick={onMenu}>
             {menuLabel}

@@ -1,6 +1,6 @@
 # Tichu
 
-A browser version of Tichu: you plus three bots, with two visual themes and a built-in coach.
+A browser version of Tichu: play against bots or with friends, in a retro pixel-arcade style, with a built-in coach.
 
 ```bash
 npm install
@@ -43,8 +43,8 @@ npm run build && npm start        # http://localhost:8787 (PORT env var to chang
   (shown in the log under "Show bot reasoning").
 - **Coach**: the **Hint** button asks the Master bot what it would do in your seat, and why.
 - **Card Tracker** tab: which cards are still unseen. This is the start of the learning mode.
-- **Themes**: *Underworld* (dark, gilded, embers) and *Arcade* (pixel swirl shader, CRT, wobbly cards).
-  You can switch mid-game from the top bar.
+- **Look**: pixel-arcade style (posterised swirl shader, CRT scanlines, wobbly cards), with original card
+  art and custom-drawn 2/5 digits (the pixel font's own 2 and 5 look like an S).
 
 ## Layout
 
@@ -55,7 +55,7 @@ src/engine/   pure, deterministic rules engine (no UI). Cards are ints 0..55.
   game.ts       state machine: applyAction(state, action) -> new state; seeded RNG; event log
   view.ts       PlayerView = what one seat may see (bots only get this, so they can't cheat)
 src/bots/     Bot interface + heuristic bots, hand planner, card counting, headless runner
-src/ui/       React UI, themes in src/ui/themes/*.css
+src/ui/       React UI; styles in src/ui/themes/{base,arcade}.css
 src/net/      online play: wire protocol, state masking/rotation, Room (lobby + seats + server-side bots)
 server/       HTTP + WebSocket server (serves dist/ and /ws)
 scripts/simulate.ts   bot-vs-bot evaluation harness

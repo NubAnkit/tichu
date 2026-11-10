@@ -917,26 +917,6 @@ button {
   font-family: var(--font-display);
   letter-spacing: 0.1em;
 }
-.theme-picker {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-.theme-option {
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: left;
-  padding: 16px;
-}
-.theme-name {
-  font-size: 22px;
-}
-.theme-tagline {
-  font-size: 14px;
-  opacity: 0.8;
-}
 .seat-config {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -1286,4 +1266,9 @@ button {
 .th-list li {
   text-align: left;
   justify-items: start;
+}
+
+/* inline pixel 2/5 are only shown by the Arcade theme */
+.rank-pixel {
+  display: none;
 }

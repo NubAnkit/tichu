@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { BOT_LEVELS, BotLevel } from '../bots';
 import { DRAGON, PHOENIX, MAHJONG, DOG } from '../engine/cards';
 import { Card } from './components/Card';
-import { EmberBackground, SwirlBackground } from './components/Backgrounds';
+import { SwirlBackground } from './components/Backgrounds';
 import { GameScreen, SeatDisplay } from './GameScreen';
 import { GameConfig, useGame } from './useGame';
 import { Lobby } from './Lobby';
 import { activeLobby, useOnline } from './online';
 
-export type Theme = 'underworld' | 'arcade';
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -26,13 +25,8 @@ function save(key: string, v: unknown) {
   }
 }
 
-const THEMES: { id: Theme; name: string; tagline: string }[] = [
-  { id: 'underworld', name: 'Underworld', tagline: 'Gilded tablets, embers and blood-red shadow.' },
-  { id: 'arcade', name: 'Arcade', tagline: 'Chunky pixels, CRT glow and juicy, wobbly cards.' },
-];
 
 export function App() {
-  const [theme, setThemeState] = useState<Theme>(() => load('tichu.theme', 'underworld'));
   const [config, setConfig] = useState<GameConfig>(() =>
     load('tichu.config', { levels: ['normal', 'normal', 'normal'], targetScore: 1000, speed: 1 } as GameConfig),
   );
@@ -58,10 +52,6 @@ export function App() {
     if (location.search.includes('join=')) history.replaceState(null, '', location.pathname);
   };
 
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
-    save('tichu.theme', t);
-  };
   const update = (c: Partial<GameConfig>) => {
     const next = { ...config, ...c };
     setConfig(next);
@@ -69,20 +59,18 @@ export function App() {
   };
 
   if (playing) {
-    return <SoloGame key={gameKey} config={config} theme={theme} onTheme={setTheme} onMenu={() => setPlaying(false)} />;
+    return <SoloGame key={gameKey} config={config} onMenu={() => setPlaying(false)} />;
   }
 
   if (online.status !== 'idle' || online.lobby) {
     const started = online.lobby?.started && online.controller;
     return (
-      <div className={`online theme-${theme}`}>
+      <div className="online theme-arcade">
         {started ? (
           <>
             <GameScreen
               game={online.controller!}
               seats={online.seats}
-              theme={theme}
-              onTheme={setTheme}
               onMenu={leaveOnline}
               menuLabel="Leave"
               online
@@ -97,14 +85,14 @@ export function App() {
               }
             />
             {showLobby && (
-              <div className={`overlay-root theme-${theme}`}>
+              <div className="overlay-root theme-arcade">
                 <Lobby online={online} overlay onClose={() => setShowLobby(false)} />
               </div>
             )}
           </>
         ) : (
-          <div className={`menu theme-${theme}`}>
-            {theme === 'underworld' ? <EmberBackground /> : <SwirlBackground />}
+          <div className="menu theme-arcade">
+            <SwirlBackground />
             <div className="menu-inner">
               <h1 className="menu-title small">TICHU</h1>
               <Lobby online={online} />
@@ -125,8 +113,8 @@ export function App() {
   };
 
   return (
-    <div className={`menu theme-${theme}`}>
-      {theme === 'underworld' ? <EmberBackground /> : <SwirlBackground />}
+    <div className="menu theme-arcade">
+      <SwirlBackground />
       <div className="menu-inner">
         <h1 className="menu-title">TICHU</h1>
         <p className="menu-tag">A climbing card game for four, in two teams.</p>
@@ -135,18 +123,6 @@ export function App() {
           {[MAHJONG, DOG, PHOENIX, DRAGON].map((id, i) => (
             <Card key={id} id={id} size="lg" className="hero-card" style={{ ['--i' as string]: i, ['--n' as string]: 4 }} />
           ))}
-        </div>
-
-        <div className="menu-section">
-          <h3>Style</h3>
-          <div className="theme-picker">
-            {THEMES.map((t) => (
-              <button key={t.id} className={`theme-option ${theme === t.id ? 'active' : ''} opt-${t.id}`} onClick={() => setTheme(t.id)}>
-                <span className="theme-name">{t.name}</span>
-                <span className="theme-tagline">{t.tagline}</span>
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="menu-section">
@@ -233,12 +209,12 @@ export function App() {
 
 const SOLO_SEAT_NAMES = ['You', 'East', 'North', 'West'];
 
-function SoloGame({ config, theme, onTheme, onMenu }: { config: GameConfig; theme: Theme; onTheme: (t: Theme) => void; onMenu: () => void }) {
+function SoloGame({ config, onMenu }: { config: GameConfig; onMenu: () => void }) {
   const game = useGame(config);
   const seats: SeatDisplay[] = SOLO_SEAT_NAMES.map((name, p) => {
     if (p === 0) return { name, tag: 'You' };
     const lvl = BOT_LEVELS.find((l) => l.id === config.levels[p - 1])?.name ?? '';
     return { name, tag: `${p === 2 ? 'Partner' : 'Opponent'} · ${lvl}` };
   });
-  return <GameScreen game={game} seats={seats} theme={theme} onTheme={onTheme} onMenu={onMenu} />;
+  return <GameScreen game={game} seats={seats} onMenu={onMenu} />;
 }

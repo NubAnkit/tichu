@@ -1,13 +1,45 @@
 import type { CSSProperties, MouseEvent } from 'react';
 import { CARDS, CardId, rankLabel } from '../../engine/cards';
 import { SpecialGlyph, SuitGlyph } from './Glyphs';
+import { PIXELIFY, digitSvgPath } from '../fonts/digitGlyphs';
 
 const SPECIAL_LABEL: Record<string, string> = { mahjong: '1', dog: 'DOG', phoenix: 'PHX', dragon: 'DRG' };
 const SPECIAL_TITLE: Record<string, string> = { mahjong: 'Mah Jong', dog: 'Dog', phoenix: 'Phoenix', dragon: 'Dragon' };
 
-/** A card rank label. (The Arcade theme's clearer 2 and 5 come from its "Tichu Digits" font.) */
+/*
+ * A card rank label. In the Arcade theme, 2 and 5 are drawn as inline SVG
+ * (see fonts/digitGlyphs.ts) because Pixelify Sans draws them like an S. Inline
+ * shapes render the same in every browser, unlike a downloaded font.
+ */
+const PIX_2 = digitSvgPath('2', 700);
+const PIX_5 = digitSvgPath('5', 700);
+const { advance: PIX_ADV, Y: PIX_Y } = PIXELIFY[700];
+const PIX_H = PIX_Y[11] - PIX_Y[0];
+
+function PixelDigit({ ch }: { ch: '2' | '5' }) {
+  return (
+    <svg className="rank-pixel" viewBox={`0 0 ${PIX_ADV} ${PIX_H}`} fill="currentColor" aria-hidden>
+      <path d={ch === '2' ? PIX_2 : PIX_5} />
+    </svg>
+  );
+}
+
 export function RankText({ label }: { label: string }) {
-  return <span className="card-rank">{label}</span>;
+  if (!/[25]/.test(label)) return <span className="card-rank">{label}</span>;
+  return (
+    <span className="card-rank" aria-label={label}>
+      {[...label].map((ch, i) =>
+        ch === '2' || ch === '5' ? (
+          <span key={i} className="pix-char">
+            <span className="rank-font">{ch}</span>
+            <PixelDigit ch={ch} />
+          </span>
+        ) : (
+          ch
+        ),
+      )}
+    </span>
+  );
 }
 
 interface Props {

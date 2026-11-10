@@ -447,22 +447,20 @@
 .theme-arcade .menu-section h3 {
   color: var(--gold);
 }
-.theme-arcade .theme-option {
-  background: var(--panel-dark);
-  border: 3px solid #3d5068;
-  border-radius: 12px;
-  color: var(--text);
-  box-shadow: 0 4px 0 var(--edge);
-}
-.theme-arcade .theme-option.active {
-  border-color: var(--orange);
-}
-.theme-arcade .opt-underworld .theme-name {
-  font-family: 'Cinzel', serif;
-}
 .theme-arcade .hero-card .card-face {
   animation: arcIdle 2.6s ease-in-out infinite;
   animation-delay: calc(var(--i) * -0.6s);
+}
+
+/* inline 2 and 5 (Card.tsx RankText), sized to Pixelify's bold metrics */
+.theme-arcade .pix-char .rank-font {
+  display: none;
+}
+.theme-arcade .pix-char .rank-pixel {
+  display: inline-block;
+  width: 0.603em;
+  height: 0.649em;
+  vertical-align: -0.011em;
 }
 
 /* ---- lobby */
