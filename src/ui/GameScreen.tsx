@@ -25,6 +25,8 @@ interface Props {
   /** Online games hide bot reasoning (it would leak hidden cards). */
   online?: boolean;
   canRestart?: boolean;
+  /** Online hosts can turn the Card Tracker off for everyone. */
+  cardTracker?: boolean;
   topbarExtra?: ReactNode;
 }
 
@@ -41,7 +43,7 @@ const PASS_TARGETS = [
   { label: 'East', role: 'opponent', seat: 1 },
 ];
 
-export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = false, canRestart = true, topbarExtra }: Props) {
+export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = false, canRestart = true, cardTracker = true, topbarExtra }: Props) {
   const { state, dispatch, thoughts, error, setError, restart, hint } = game;
   setSeatNames(seats.map((s) => s.name));
   useEffect(() => () => setSeatNames(null), []);
@@ -75,6 +77,9 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
     setPassSlots([null, null, null]);
   }, [phase, state.round, state.passChoices]);
   useEffect(() => setAdvice(null), [state.nextEventId]);
+  useEffect(() => {
+    if (!cardTracker) setPanel((p) => (p === 'tracker' ? 'log' : p));
+  }, [cardTracker]);
   useEffect(() => {
     if (!state.trick.length) {
       setTrickPinned(false);
@@ -323,7 +328,7 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
 
         <aside className="side">
           <div className="tabs">
-            {(['log', 'tracker', 'scores'] as const).map((t) => (
+            {(['log', 'tracker', 'scores'] as const).filter((t) => t !== 'tracker' || cardTracker).map((t) => (
               <button key={t} className={`tab ${panel === t ? 'active' : ''}`} onClick={() => setPanel(t)}>
                 {t === 'log' ? 'Log' : t === 'tracker' ? 'Card Tracker' : 'Scores'}
               </button>
@@ -332,7 +337,7 @@ export function GameScreen({ game, seats, onMenu, menuLabel = 'Menu', online = f
           {panel === 'log' && (
             <LogPanel events={state.events} thoughts={showThoughts && !online ? thoughts : []} showThoughts={showThoughts} setShowThoughts={online ? null : setShowThoughts} />
           )}
-          {panel === 'tracker' && <TrackerPanel hand={hand} played={state.played} />}
+          {panel === 'tracker' && cardTracker && <TrackerPanel hand={hand} played={state.played} />}
           {panel === 'scores' && <ScoresPanel state={state} />}
         </aside>
       </main>

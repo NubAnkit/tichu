@@ -25,6 +25,7 @@ export class Room {
   hostId = '';
   state: GameState | null = null;
   targetScore = 1000;
+  cardTracker = true;
   lastActivity = Date.now();
   private bots: (Bot | null)[] = [null, null, null, null];
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -166,6 +167,10 @@ export class Room {
         if (![200, 500, 1000].includes(msg.targetScore)) return fail('Bad target');
         this.targetScore = msg.targetScore;
         return this.broadcast();
+      case 'setOptions':
+        if (!isHost) return fail('Only the host can change game settings');
+        this.cardTracker = !!msg.cardTracker;
+        return this.broadcast();
       case 'start':
       case 'restart':
         if (!isHost) return fail('Only the host can start the game');
@@ -232,6 +237,7 @@ export class Room {
       seats: this.seats.map((s) => ({ ...s })),
       started: !!this.state,
       targetScore: this.targetScore,
+      cardTracker: this.cardTracker,
       spectators: [...this.members.values()].filter((m) => m.seat === null && m.connected).map((m) => m.name),
     };
   }

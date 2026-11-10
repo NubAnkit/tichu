@@ -1272,3 +1272,14 @@ button {
 .rank-pixel {
   display: none;
 }
+.toggle-field {
+  cursor: pointer;
+}
+.toggle-field.readonly {
+  cursor: default;
+  opacity: 0.8;
+}
+.toggle-field input {
+  width: 18px;
+  height: 18px;
+}

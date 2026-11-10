@@ -75,6 +75,7 @@ export function App() {
               menuLabel="Leave"
               online
               canRestart={online.isHost}
+              cardTracker={online.lobby!.cardTracker}
               topbarExtra={
                 <>
                   {online.status === 'reconnecting' && <span className="pill them">Reconnecting…</span>}

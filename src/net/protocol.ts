@@ -24,6 +24,8 @@ export interface LobbyInfo {
   seats: SeatInfo[];
   started: boolean;
   targetScore: number;
+  /** Host setting: show the Card Tracker panel to players. */
+  cardTracker: boolean;
   spectators: string[];
 }
 
@@ -34,6 +36,7 @@ export type ClientMsg =
   | { t: 'stand' }
   | { t: 'setSeat'; seat: number; level: BotLevel | null }
   | { t: 'setTarget'; targetScore: number }
+  | { t: 'setOptions'; cardTracker: boolean }
   | { t: 'start' }
   | { t: 'restart' }
   | { t: 'action'; action: Action }

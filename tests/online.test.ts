@@ -156,6 +156,26 @@ describe('online lobby end-to-end', () => {
     cs.forEach((c) => c.ws.close());
   }, 120000);
 
+  it('only the host can toggle the Card Tracker, and everyone sees it', async () => {
+    const host = new Client('H', false);
+    const guest = new Client('G', false);
+    await Promise.all([host.ready, guest.ready]);
+    host.send({ t: 'create', name: 'H' });
+    await host.waitFor(() => !!host.code);
+    guest.send({ t: 'join', code: host.code, name: 'G' });
+    await guest.waitFor(() => guest.seat !== null);
+    const lastLobby = (c: Client) => [...c.msgs].reverse().find((m) => m.t === 'lobby') as Extract<ServerMsg, { t: 'lobby' }>;
+    expect(lastLobby(guest).lobby.cardTracker).toBe(true); // on by default
+    guest.send({ t: 'setOptions', cardTracker: false });
+    await guest.waitFor(() => guest.errors.some((e) => /host/.test(e)));
+    expect(lastLobby(guest).lobby.cardTracker).toBe(true);
+    host.send({ t: 'setOptions', cardTracker: false });
+    await guest.waitFor(() => lastLobby(guest).lobby.cardTracker === false);
+    await host.waitFor(() => lastLobby(host).lobby.cardTracker === false);
+    host.ws.close();
+    guest.ws.close();
+  });
+
   it('rejects unknown codes', async () => {
     const c = new Client('X', false);
     await c.ready;

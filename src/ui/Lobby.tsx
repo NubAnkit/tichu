@@ -140,6 +140,16 @@ export function Lobby({ online, overlay, onClose }: Props) {
               </select>
             </label>
           )}
+          <label className={`field inline toggle-field ${isHost ? '' : 'readonly'}`} title={isHost ? '' : 'Only the host can change this'}>
+            <input
+              type="checkbox"
+              disabled={!isHost}
+              checked={lobby.cardTracker}
+              onChange={(e) => send({ t: 'setOptions', cardTracker: e.target.checked })}
+            />
+            <span>Card Tracker {lobby.cardTracker ? 'on' : 'off'}</span>
+            {!isHost && <span className="muted small">(host decides)</span>}
+          </label>
           {!lobby.started &&
             (isHost ? (
               <button className="btn primary big" onClick={() => send({ t: 'start' })}>
